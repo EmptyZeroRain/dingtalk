@@ -5,4 +5,6 @@ const (
 	AccessToken string = "access_token"
 	// Secret secret key
 	Secret string = "secret"
+	// Domain dingtalk domain key
+	Domain string = "domain"
 )

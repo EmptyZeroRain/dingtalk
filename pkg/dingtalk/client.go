@@ -15,13 +15,15 @@ import (
 type Client struct {
 	AccessToken string
 	Secret      string
+	Domain      string
 }
 
 // NewClient new dingtalk client
-func NewClient(accessToken, secret string) *Client {
+func NewClient(accessToken, secret, domain string) *Client {
 	return &Client{
 		AccessToken: accessToken,
 		Secret:      secret,
+		Domain:      domain,
 	}
 }
 
@@ -43,7 +45,7 @@ func (d *Client) Send(message Message) (string, *Response, error) {
 	}
 	reqString := string(reqBytes)
 
-	pushURL, err := security.URL(d.AccessToken, d.Secret)
+	pushURL, err := security.URL(d.Domain, d.AccessToken, d.Secret)
 	if err != nil {
 		return reqString, res, err
 	}

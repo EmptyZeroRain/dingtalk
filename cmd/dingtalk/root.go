@@ -31,11 +31,12 @@ func Execute() {
 func newClient() (*dingtalk.Client, error) {
 	token := getAccessToken()
 	secret := getSecret()
+	domain := getDomain()
 
 	if len(token) < 1 {
 		return nil, errors.New("access_token can not be empty")
 	}
-	client := dingtalk.NewClient(token, secret)
+	client := dingtalk.NewClient(token, secret, domain)
 	return client, nil
 }
 
@@ -63,7 +64,19 @@ func getSecret() string {
 	return ""
 }
 
-var accessToken, secret string
+func getDomain() string {
+	if len(domain) > 0 {
+		return domain
+	}
+
+	value, err := configs.GetConfig(configs.Domain)
+	if err == nil {
+		return value
+	}
+	return ""
+}
+
+var accessToken, secret, domain string
 var isAtAll bool
 var atMobiles []string
 var debug bool
@@ -73,6 +86,7 @@ func init() {
 
 	rootCmd.PersistentFlags().StringVarP(&accessToken, configs.AccessToken, "t", "", configs.AccessToken)
 	rootCmd.PersistentFlags().StringVarP(&secret, configs.Secret, "s", "", configs.Secret)
+	rootCmd.PersistentFlags().StringVarP(&domain, configs.Domain, "d", "", configs.Domain)
 	rootCmd.PersistentFlags().BoolVarP(&isAtAll, "isAtAll", "a", false, "isAtAll")
 	rootCmd.PersistentFlags().StringSliceVarP(&atMobiles, "atMobiles", "m", []string{}, "atMobiles")
 	rootCmd.PersistentFlags().BoolVarP(&debug, "debug", "D", false, "debug")
@@ -81,6 +95,9 @@ func init() {
 		log.Print(err)
 	}
 	if err := viper.BindPFlag(configs.Secret, rootCmd.PersistentFlags().Lookup(configs.Secret)); err != nil {
+		log.Print(err)
+	}
+	if err := viper.BindPFlag(configs.Domain, rootCmd.PersistentFlags().Lookup(configs.Domain)); err != nil {
 		log.Print(err)
 	}
 }
