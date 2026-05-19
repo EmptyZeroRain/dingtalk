@@ -4,6 +4,11 @@ go 1.23.0
 
 toolchain go1.24.1
 
+retract (
+	v1.2.5
+	v1.2.6
+)
+
 require (
 	bou.ke/monkey v1.0.2
 	github.com/CatchZeng/gutils v0.1.5
